@@ -33,6 +33,14 @@ Entre os recursos implementados estão:
 
 > As funcionalidades podem ser ampliadas conforme o desenvolvimento do projeto.
 
+## Download
+
+### Windows
+
+Baixe a versão mais recente do script através da página de Releases:
+
+[**Baixar Guia de Manutenção**](https://github.com/atenente/bash_manutecao/releases/latest)
+
 ## Como executar
 
 1. Faça o download ou clone este repositório.
