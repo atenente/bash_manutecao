@@ -16,10 +16,14 @@ set "task_count=0"
 call :task clean_temp "Limpar arquivos temporarios"
 call :task clean_updates "Limpa arquivos de atualizacoes desnecessarios"
 call :task flush_dns "Limpar cache DNS"
-call :task :clean_trash "Esvazia lixeira"
-call :task :reset_spooler "Restart na fila de impressao"
-call :task :repair_system "Corrige arquivos corrompidos"
-call :task :optimize_disk "Otimiza o disco (SSD/HD)"
+call :task clean_trash "Esvazia lixeira"
+call :task reset_spooler "Restart na fila de impressao"
+call :task check_disk "Verificar disco (CHKDSK online)"
+call :task check_image "Verificar imagem do Windows (DISM ScanHealth)"
+call :task verify_system "Verificar arquivos protegidos (SFC verifyonly)"
+call :task repair_image "Reparar imagem do Windows (DISM RestoreHealth)"
+call :task repair_system "Corrigir arquivos do Windows (SFC scannow)"
+call :task optimize_disk "Otimizar disco (SSD/HD)"
 :: *********************************************************
 
 goto header
@@ -94,6 +98,7 @@ goto header
     echo.
     echo                 MENU TAREFAS
     echo ----------------------------------------------------------
+
     call :list_task
     echo 0 - Sair
     echo.
@@ -149,15 +154,43 @@ exit /b
     echo Processo concluido.
 exit /b
 
-:repair_system
-    echo Iniciando a verificacao
-    sfc /scannow
-    echo Verificacao concluido.
+:check_disk
+    echo Verificando o disco online. Esse processo pode demorar...
+    chkdsk %SystemDrive% /scan
+    if errorlevel 1 echo O CHKDSK encontrou um problema ou terminou com erro.
+exit /b
+
+:check_image
+    echo Verificando a imagem do Windows sem reparar...
+    Dism /Online /Cleanup-Image /ScanHealth
+    if errorlevel 1 echo O DISM terminou com erro.
+exit /b
+
+:verify_system
+    echo Verificando arquivos protegidos sem reparar...
+    sfc /verifyonly
+    if errorlevel 1 echo O SFC encontrou um problema ou terminou com erro.
 exit /b
 
 :optimize_disk
     echo Iniciando a otimizacao
     defrag C: /O
     echo otimizacao concluida.
+exit /b
+
+:repair_image
+    echo Reparando a imagem do Windows. Esse processo pode demorar...
+    Dism /Online /Cleanup-Image /RestoreHealth
+    if errorlevel 1 (
+        echo O DISM terminou com erro.
+        exit /b
+    )
+    echo Imagem do Windows reparada com sucesso.
+exit /b
+
+:repair_system
+    echo Verificando e reparando arquivos protegidos...
+    sfc /scannow
+    echo Verificacao concluida.
 exit /b
 :: *********************************************************
