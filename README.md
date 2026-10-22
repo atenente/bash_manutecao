@@ -1,18 +1,19 @@
 # Guia de Manutenção do Windows
 
-Ferramenta em Batch para diagnóstico e manutenção de computadores com Windows. A versão 2.0 documenta um menu modular, separação de tarefas por permissão, registros de execução e backups antes de algumas limpezas.
+Ferramenta em Batch para diagnóstico e manutenção de computadores com Windows. O menu separa tarefas por permissão, registra as execuções e cria backups antes de algumas limpezas. As versões publicadas são identificadas pelas tags do GitHub.
 
 > **Atenção:** execute somente em computadores próprios ou nos quais você tenha autorização. Em ambientes corporativos, siga as políticas da equipe de TI. As operações de manutenção podem alterar ou remover dados; faça backups independentes e teste em um ambiente controlado.
 
-## Recursos da versão 2.0
+## Recursos
 
 - Painel com informações do computador, usuário, Windows, memória, espaço em disco e endereços IPv4.
 - Relatório detalhado de sistema, rede e drivers.
 - Verificações e reparos do disco, dos arquivos protegidos e da imagem do Windows, usando CHKDSK, SFC e DISM.
-- Limpeza de cache DNS, arquivos temporários e cache do Windows Update.
+- Limpeza de cache DNS, arquivos temporários do usuário e do Windows e cache do Windows Update.
 - Reinício do serviço de impressão, otimização de disco e opção para esvaziar a lixeira.
-- Confirmação para operações sensíveis e solicitação de elevação para tarefas administrativas.
-- Logs de execução e backups prévios em limpezas selecionadas.
+- Escolha no início entre abrir o programa como administrador ou continuar como usuário comum; o menu mostra apenas as tarefas disponíveis para o modo escolhido.
+- Confirmação para operações sensíveis e logs de execução.
+- Backups prévios em limpezas selecionadas.
 - Atalhos para abrir as pastas de logs e backups.
 
 ## Requisitos
@@ -25,41 +26,40 @@ Ferramenta em Batch para diagnóstico e manutenção de computadores com Windows
 
 ## Como executar
 
-1. Baixe o arquivo do programa pela página de [releases](https://github.com/atenente/bash_manutecao/releases/latest).
+1. Acesse as [tags do projeto](https://github.com/atenente/bash_manutecao/tags), escolha a versão desejada e baixe o código-fonte daquela tag.
 2. Execute o `.bat` com duplo clique ou pelo Prompt de Comando.
-3. Escolha uma opção do menu e pressione **Enter**.
-4. Confirme ou cancele as operações quando solicitado. Para tarefas administrativas, autorize a elevação pelo UAC.
+3. Se o programa não estiver elevado, escolha **S** para abrir uma nova janela com privilégios de administrador e acessar todas as tarefas, ou **N** para continuar sem elevação e ver somente as tarefas de usuário. Se apenas pressionar **Enter**, a opção padrão é **S**. Se já estiver elevado, o menu abre diretamente com todas as tarefas.
+4. Escolha uma tarefa no menu e pressione **Enter**. Confirme ou cancele as operações sensíveis quando solicitado.
 
-As tarefas de usuário comum podem ser iniciadas sem abrir o programa como administrador. A elevação é solicitada quando uma tarefa administrativa é selecionada; políticas corporativas podem impedir essa ação.
+Ao escolher **S**, autorize a abertura da janela elevada pelo UAC; a janela inicial será encerrada. As opções do menu são numeradas conforme as tarefas disponíveis no modo escolhido. Políticas corporativas podem impedir a elevação.
 
-## Opções do menu 2.0
+## Tarefas do menu
 
-| Nº | Acesso | Tarefa |
-|---:|:---:|---|
-| 1 | Usuário | Atualizar painel de diagnóstico |
-| 2 | Usuário | Salvar relatório detalhado |
-| 3 | Usuário | Limpar cache DNS |
-| 4 | Administrador | Verificar disco (`chkdsk /scan`) |
-| 5 | Administrador | Verificar imagem do Windows (`DISM /ScanHealth`) |
-| 6 | Administrador | Verificar arquivos do Windows (`sfc /verifyonly`) |
-| 7 | Administrador | Limpar temporários com backup |
-| 8 | Administrador | Limpar cache do Windows Update com backup |
-| 9 | Administrador | Esvaziar lixeira |
-| 10 | Administrador | Reiniciar serviço de impressão |
-| 11 | Administrador | Reparar imagem do Windows (`DISM /RestoreHealth`) |
-| 12 | Administrador | Reparar arquivos do Windows (`sfc /scannow`) |
-| 13 | Administrador | Otimizar disco |
-| 14 | Usuário | Abrir pasta de backups |
-| 15 | Usuário | Abrir pasta de logs |
-| 0 | — | Sair |
+| Acesso | Tarefa |
+|:---:|---|
+| Usuário | Atualizar painel de diagnóstico |
+| Usuário | Salvar relatório detalhado |
+| Usuário | Limpar cache DNS |
+| Administrador | Verificar disco (`chkdsk /scan`) |
+| Administrador | Verificar imagem do Windows (`DISM /ScanHealth`) |
+| Administrador | Verificar arquivos do Windows (`sfc /verifyonly`) |
+| Administrador | Limpar temporários com backup |
+| Administrador | Limpar cache do Windows Update com backup |
+| Administrador | Esvaziar lixeira |
+| Administrador | Reiniciar serviço de impressão |
+| Administrador | Reparar imagem do Windows (`DISM /RestoreHealth`) |
+| Administrador | Reparar arquivos do Windows (`sfc /scannow`) |
+| Administrador | Otimizar disco |
+| Usuário | Abrir pasta de backups |
+| Usuário | Abrir pasta de logs |
 
-> **Usuário** indica execução sem elevação. **Administrador** requer privilégios elevados. Algumas tarefas de usuário ainda podem ser bloqueadas por políticas ou configurações do computador.
+> No modo sem elevação, apenas tarefas de **Usuário** aparecem. No modo administrador, aparecem as tarefas dos dois níveis.
 
 ## Logs e backups
 
-Na versão 2.0, os arquivos são gravados em `%LOCALAPPDATA%\GuiaManutencao2\`, nas pastas `Logs` e `Backups`. Os logs incluem eventos e saídas dos comandos; os relatórios podem conter nomes de máquinas, endereços IP, adaptadores e outras informações internas. Proteja esses arquivos antes de compartilhá-los.
+Os arquivos são gravados em `%LOCALAPPDATA%\GuiaManutencao\`, nas pastas `Logs` e `Backups`. Os logs incluem eventos e saídas dos comandos; os relatórios podem conter nomes de máquinas, endereços IP, adaptadores e outras informações internas. Proteja esses arquivos antes de compartilhá-los.
 
-Os backups são criados para algumas limpezas, mas não são validados por hash e não há restauração automática. Códigos de retorno do `robocopy` inferiores a 8 não garantem que a cópia esteja completa. Backups não são removidos automaticamente; monitore o espaço e defina uma política de retenção. Tarefas elevadas podem gravar arquivos no perfil da conta administrativa utilizada.
+Os backups são criados para algumas limpezas, mas não são validados por hash e não há restauração automática. Códigos de retorno do `robocopy` inferiores a 8 não garantem que a cópia esteja completa. Backups não são removidos automaticamente; monitore o espaço e defina uma política de retenção.
 
 ## Cuidados e limitações
 
@@ -70,11 +70,7 @@ Os backups são criados para algumas limpezas, mas não são validados por hash 
 - Reparos do DISM e SFC podem demorar; o DISM pode depender de uma fonte de reparo e de configurações de rede ou atualização.
 - A otimização é delegada ao Windows, que escolhe a operação apropriada para o disco.
 - Uma mensagem de sucesso baseada no código de retorno de uma ferramenta não equivale a uma auditoria completa do estado do sistema.
-- A versão 2.0 não foi validada em um computador Windows neste ambiente.
-
-## Estado dos arquivos neste repositório
-
-O arquivo `Guia_Manutencao_v_2.bat` contém o menu 2.0 e as rotinas descritas neste README. O script foi atualizado neste repositório, mas ainda precisa ser executado e validado em um computador Windows antes de ser distribuído.
+- O script precisa ser testado no computador de destino antes de ser usado em produção; ferramentas e permissões podem se comportar de maneira diferente conforme a instalação do Windows.
 
 ## Autor
 
