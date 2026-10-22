@@ -1,55 +1,80 @@
 # Guia de Manutenção do Windows
 
-Script desenvolvido em **Batch (.BAT)** para auxiliar na execução de tarefas de manutenção e diagnóstico básico em computadores com Windows.
+Ferramenta em Batch para diagnóstico e manutenção de computadores com Windows. A versão 2.0 documenta um menu modular, separação de tarefas por permissão, registros de execução e backups antes de algumas limpezas.
 
-O projeto surgiu como uma forma de transformar procedimentos técnicos recorrentes em uma ferramenta simples, automatizada e de fácil utilização.
+> **Atenção:** execute somente em computadores próprios ou nos quais você tenha autorização. Em ambientes corporativos, siga as políticas da equipe de TI. As operações de manutenção podem alterar ou remover dados; faça backups independentes e teste em um ambiente controlado.
 
-## Objetivo
+## Recursos da versão 2.0
 
-O **Guia de Manutenção** busca centralizar procedimentos básicos de manutenção do Windows em um único script, reduzindo a necessidade de executar diversos comandos manualmente pelo Prompt de Comando.
+- Painel com informações do computador, usuário, Windows, memória, espaço em disco e endereços IPv4.
+- Relatório detalhado de sistema, rede e drivers.
+- Verificações e reparos do disco, dos arquivos protegidos e da imagem do Windows, usando CHKDSK, SFC e DISM.
+- Limpeza de cache DNS, arquivos temporários e cache do Windows Update.
+- Reinício do serviço de impressão, otimização de disco e opção para esvaziar a lixeira.
+- Confirmação para operações sensíveis e solicitação de elevação para tarefas administrativas.
+- Logs de execução e backups prévios em limpezas selecionadas.
+- Atalhos para abrir as pastas de logs e backups.
 
-Além da aplicação prática, o projeto também faz parte do meu processo de aprendizado em **suporte técnico, Windows, automação e scripting**.
+## Requisitos
 
-## Tecnologias
+- Windows 10 ou Windows 11.
+- Prompt de Comando e Windows PowerShell.
+- Ferramentas nativas do Windows utilizadas por cada tarefa, como `chkdsk`, `DISM`, `sfc`, `robocopy` e `defrag`.
+- Permissão de administrador para tarefas identificadas como administrativas.
+- Espaço em disco suficiente para armazenar os backups, que podem ocupar vários gigabytes.
 
-* Windows
-* Batch Script (`.bat`)
-* CMD
-* Git
-* GitHub
+## Como executar
 
-## Funcionalidades
+1. Baixe o arquivo do programa pela página de [releases](https://github.com/atenente/bash_manutecao/releases/latest).
+2. Execute o `.bat` com duplo clique ou pelo Prompt de Comando.
+3. Escolha uma opção do menu e pressione **Enter**.
+4. Confirme ou cancele as operações quando solicitado. Para tarefas administrativas, autorize a elevação pelo UAC.
 
-O script foi desenvolvido para auxiliar em procedimentos de manutenção e diagnóstico do ambiente Windows, para o usuário final.
+As tarefas de usuário comum podem ser iniciadas sem abrir o programa como administrador. A elevação é solicitada quando uma tarefa administrativa é selecionada; políticas corporativas podem impedir essa ação.
 
-Entre os recursos implementados estão:
+## Opções do menu 2.0
 
-* Execução automatizada de comandos de manutenção
-* Verificações básicas do sistema
-* Procedimentos para auxiliar no diagnóstico de problemas
-* Organização dos processos em um fluxo simplificado
-* Execução através do Prompt de Comando
+| Nº | Acesso | Tarefa |
+|---:|:---:|---|
+| 1 | Usuário | Atualizar painel de diagnóstico |
+| 2 | Usuário | Salvar relatório detalhado |
+| 3 | Usuário | Limpar cache DNS |
+| 4 | Administrador | Verificar disco (`chkdsk /scan`) |
+| 5 | Administrador | Verificar imagem do Windows (`DISM /ScanHealth`) |
+| 6 | Administrador | Verificar arquivos do Windows (`sfc /verifyonly`) |
+| 7 | Administrador | Limpar temporários com backup |
+| 8 | Administrador | Limpar cache do Windows Update com backup |
+| 9 | Administrador | Esvaziar lixeira |
+| 10 | Administrador | Reiniciar serviço de impressão |
+| 11 | Administrador | Reparar imagem do Windows (`DISM /RestoreHealth`) |
+| 12 | Administrador | Reparar arquivos do Windows (`sfc /scannow`) |
+| 13 | Administrador | Otimizar disco |
+| 14 | Usuário | Abrir pasta de backups |
+| 15 | Usuário | Abrir pasta de logs |
+| 0 | — | Sair |
 
-> As funcionalidades podem ser ampliadas conforme o desenvolvimento do projeto.
+> **Usuário** indica execução sem elevação. **Administrador** requer privilégios elevados. Algumas tarefas de usuário ainda podem ser bloqueadas por políticas ou configurações do computador.
 
-## Download
+## Logs e backups
 
-[**Baixar Guia de Manutenção**](https://github.com/atenente/bash_manutecao/releases/latest)
+Na versão 2.0, os arquivos são gravados em `%LOCALAPPDATA%\GuiaManutencao2\`, nas pastas `Logs` e `Backups`. Os logs incluem eventos e saídas dos comandos; os relatórios podem conter nomes de máquinas, endereços IP, adaptadores e outras informações internas. Proteja esses arquivos antes de compartilhá-los.
 
-Dependendo da tarefa executada, algumas funcionalidades podem exigir **permissões de administrador**.
+Os backups são criados para algumas limpezas, mas não são validados por hash e não há restauração automática. Códigos de retorno do `robocopy` inferiores a 8 não garantem que a cópia esteja completa. Backups não são removidos automaticamente; monitore o espaço e defina uma política de retenção. Tarefas elevadas podem gravar arquivos no perfil da conta administrativa utilizada.
 
-## Por que este projeto?
+## Cuidados e limitações
 
-Para consolidar os conhecimentos em Powershell e ajudar usuário final no diagnosticos de problemas em suas estações.
+- Esvaziar a lixeira remove os itens permanentemente e não cria backup automático.
+- Arquivos temporários em uso podem não ser removidos; feche aplicativos antes da limpeza.
+- A limpeza do Windows Update depende da parada e do reinício do serviço `wuauserv`. Evite executá-la durante atualizações.
+- Reiniciar o Spooler pode interromper impressões em andamento.
+- Reparos do DISM e SFC podem demorar; o DISM pode depender de uma fonte de reparo e de configurações de rede ou atualização.
+- A otimização é delegada ao Windows, que escolhe a operação apropriada para o disco.
+- Uma mensagem de sucesso baseada no código de retorno de uma ferramenta não equivale a uma auditoria completa do estado do sistema.
+- A versão 2.0 não foi validada em um computador Windows neste ambiente.
 
-A proposta também é utilizar o projeto como laboratório para evolução em:
+## Estado dos arquivos neste repositório
 
-* Administração de sistemas Windows
-* Troubleshooting
-* Automação de tarefas
-* Scripting
-* Arquitetura de software
-* Padronização de procedimentos
+O arquivo `Guia_Manutencao_v_2.bat` contém o menu 2.0 e as rotinas descritas neste README. O script foi atualizado neste repositório, mas ainda precisa ser executado e validado em um computador Windows antes de ser distribuído.
 
 ## Autor
 
